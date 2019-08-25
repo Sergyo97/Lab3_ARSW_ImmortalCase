@@ -69,7 +69,9 @@ public class Immortal extends Thread {
             }
 
         }
-
+        synchronized(immortalsPopulation){
+            if(isDead.get())immortalsPopulation.remove(this);
+        }
     }
 
     public void fight(Immortal i2) {

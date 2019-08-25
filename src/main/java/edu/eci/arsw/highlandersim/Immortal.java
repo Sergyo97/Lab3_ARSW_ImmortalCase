@@ -18,6 +18,8 @@ public class Immortal extends Thread {
 
     private AtomicBoolean isPaused;
 
+    private AtomicBoolean isDead;
+
     private final Random r = new Random(System.currentTimeMillis());
 
     private AtomicBoolean imDead;
@@ -31,20 +33,11 @@ public class Immortal extends Thread {
         this.health = health;
         this.defaultDamageValue = defaultDamageValue;
         this.isPaused = isPaused;
-        imDead = new AtomicBoolean(false);
+        this.isDead=new AtomicBoolean(false);
     }
 
     public void run() {
-        while (true) {
-            synchronized(imDead){
-                while (imDead.get()) {
-                    try {
-                        imDead.wait();
-                    } catch (Exception e) {
-                        //TODO: handle exception
-                    }
-                }
-            }
+        while (!isDead.get()) {
             synchronized (isPaused) {
                 while (isPaused.get()) {
                     try {
@@ -88,7 +81,7 @@ public class Immortal extends Thread {
             this.health += defaultDamageValue;
             updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
         } else {
-            i2.getImDead().set(true);
+            i2.stopFight();
             updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
         }
 
@@ -102,10 +95,9 @@ public class Immortal extends Thread {
         return health;
     }
 
-    public AtomicBoolean getImDead(){
-        return imDead;
+    public void stopFight(){
+        isDead.set(true);
     }
-
     @Override
     public String toString() {
 

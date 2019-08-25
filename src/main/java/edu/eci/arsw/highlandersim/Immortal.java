@@ -22,8 +22,6 @@ public class Immortal extends Thread {
 
     private final Random r = new Random(System.currentTimeMillis());
 
-    private AtomicBoolean imDead;
-
     public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue,
             AtomicBoolean isPaused, ImmortalUpdateReportCallback ucb) {
         super(name);
@@ -98,6 +96,7 @@ public class Immortal extends Thread {
     public void stopFight(){
         isDead.set(true);
     }
+
     @Override
     public String toString() {
 

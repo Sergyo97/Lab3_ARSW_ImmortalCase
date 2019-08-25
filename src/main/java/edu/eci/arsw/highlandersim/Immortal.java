@@ -20,6 +20,8 @@ public class Immortal extends Thread {
 
     private final Random r = new Random(System.currentTimeMillis());
 
+    private AtomicBoolean imDead;
+
     public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue,
             AtomicBoolean isPaused, ImmortalUpdateReportCallback ucb) {
         super(name);
@@ -29,10 +31,20 @@ public class Immortal extends Thread {
         this.health = health;
         this.defaultDamageValue = defaultDamageValue;
         this.isPaused = isPaused;
+        imDead = new AtomicBoolean(false);
     }
 
     public void run() {
         while (true) {
+            synchronized(imDead){
+                while (imDead.get()) {
+                    try {
+                        imDead.wait();
+                    } catch (Exception e) {
+                        //TODO: handle exception
+                    }
+                }
+            }
             synchronized (isPaused) {
                 while (isPaused.get()) {
                     try {
@@ -44,21 +56,23 @@ public class Immortal extends Thread {
             }
             Immortal im;
 
-            int myIndex = immortalsPopulation.indexOf(this);
+            synchronized (immortalsPopulation) {
+                int myIndex = immortalsPopulation.indexOf(this);
 
-            int nextFighterIndex = r.nextInt(immortalsPopulation.size());
+                int nextFighterIndex = r.nextInt(immortalsPopulation.size());
 
-            // avoid self-fight
-            if (nextFighterIndex == myIndex) {
-                nextFighterIndex = ((nextFighterIndex + 1) % immortalsPopulation.size());
+                // avoid self-fight
+                if (nextFighterIndex == myIndex) {
+                    nextFighterIndex = ((nextFighterIndex + 1) % immortalsPopulation.size());
+                }
+
+                im = immortalsPopulation.get(nextFighterIndex);
+
+                this.fight(im);
             }
 
-            im = immortalsPopulation.get(nextFighterIndex);
-
-            this.fight(im);
-
             try {
-                Thread.sleep(100);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -74,6 +88,7 @@ public class Immortal extends Thread {
             this.health += defaultDamageValue;
             updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
         } else {
+            i2.getImDead().set(true);
             updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
         }
 
@@ -85,6 +100,10 @@ public class Immortal extends Thread {
 
     public int getHealth() {
         return health;
+    }
+
+    public AtomicBoolean getImDead(){
+        return imDead;
     }
 
     @Override

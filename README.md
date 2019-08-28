@@ -1,12 +1,13 @@
+
 # Immortals Case Laboratory
 
 
 ### Part I -  Producer/Consumer
 1. Debido a que el hilo consumidor esta constantemente verificando la lista para consumir, esa verificación consume recursos por lo que se debe implementar un mecanismo que solo consuma cuando haya algo que consumir.
-2. El mecanismo implementado es que el productor le avise al consumidor que produjo algo, de igual forma tambien se implemento que cuando el productor produjera hasta un tope, el consumidor le avisa que consumió por lo que podra producir
+2. El mecanismo implementado es que el productor le avise al consumidor que produjo algo, de igual forma también se implemento que cuando el productor produjera hasta un tope, el consumidor le avisa que consumió por lo que podrá producir
 
 ### Part II
-
+ - El valor de la invariante para la suma de puntos de vida para N Immortals es de N * 100.
  - Design
  
 	 - Pause implementation
@@ -16,6 +17,15 @@
 	 
 	![enter image description here](https://lh3.googleusercontent.com/iPSB1sunMC3Po_FMf50DgyRbUVk8WJ8St8CmiS8VzHPg5aYHN2Z_KdiRgJshBI86hcahydeiL1lb)
 	 
+	 - Synchronized fights
+
+	![enter image description here](https://lh3.googleusercontent.com/dFhnQIgKEAAmYJJs92Hn5AU3z_EjhUbkkkElwpFFJpbdS9XOfL9mdMbMNqcQ0AT6mxQWl1o8fi61)
+
+	 - Concurrent collections
+ 
+	![enter image description here](https://lh3.googleusercontent.com/tyE4a9MVjsXLd8pdUptBH1BDn-2NbL2gwlNdFs5_PfONc8wDFf_SlqmCv7N--qQ0BwdY52M6wGkX)
+
+
 
 ## Running
 
